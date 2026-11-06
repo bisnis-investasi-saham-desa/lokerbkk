@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #0a0a0a;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: #0a0a0a;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  /* Medium font sizing standard for readability across all content */
+  p, li, span, td, th {
+    color: #0a0a0a;
+  }
+
+  /* All clickable anchors and interactive elements styled with prominent blue */
+  a {
+    color: #2563eb;
+    transition: color 0.15s ease-in-out;
+  }
+
+  a:hover {
+    color: #1d4ed8;
+  }
+}

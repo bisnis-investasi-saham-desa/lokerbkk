@@ -1,0 +1,6 @@
+{
+  "name": "LOKERBKK.COM - Lowongan Kerja via BKK Sekolah",
+  "description": "Portal resmi informasi lowongan kerja via BKK (Bursa Kerja Khusus) sekolah seluruh Indonesia untuk lulusan SMK/SMA terpercaya, bebas penipuan, dan terverifikasi Disnaker.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
