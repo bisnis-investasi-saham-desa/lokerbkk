@@ -1,28 +1,18 @@
 import React, { useState } from 'react';
 import {
   Briefcase,
-  Search,
-  Building2,
-  BookOpen,
   Menu,
-  X,
-  Key,
-  ShieldCheck,
-  ChevronDown
+  X
 } from 'lucide-react';
 
 interface HeaderProps {
   currentPath: string;
   onNavigate: (href: string) => void;
-  onOpenApiModal: () => void;
-  hasCustomApiKey: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentPath,
-  onNavigate,
-  onOpenApiModal,
-  hasCustomApiKey
+  onNavigate
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -44,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 w-full bg-sky-50/90 backdrop-blur-md border-b border-sky-200/80 shadow-2xs">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Brand Logo - LOKERBKK.COM */}
+          {/* Brand Logo */}
           <div className="flex items-center gap-3">
             <a
               href="/"
@@ -65,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
           </div>
 
-          {/* Desktop Navigation Links - Clickable in Blue */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1" aria-label="Navigasi Utama">
             {navLinks.map((link) => {
               const isActive =
@@ -89,19 +79,6 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })}
           </nav>
-
-          {/* Header Action: Hidden from visitors but functionality remains active */}
-          <div className="hidden">
-            <button
-              type="button"
-              onClick={onOpenApiModal}
-              className="sr-only"
-              tabIndex={-1}
-              aria-hidden="true"
-            >
-              API Key Config
-            </button>
-          </div>
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-2">
