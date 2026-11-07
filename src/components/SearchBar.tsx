@@ -8,24 +8,23 @@ interface SearchBarProps {
   isCompact?: boolean;
 }
 
-const POPULAR_LOCATIONS = [
-  'Karawang',
-  'Cikarang',
+// Pilihan paten dari API
+const PILIHAN_KOTA = [
   'Bekasi',
-  'Tangerang',
-  'Jakarta',
-  'Surabaya',
+  'Cikarang',
+  'Karawang',
+  'Cikampek',
   'Solo',
-  'Semarang'
+  'Tangerang',
+  'Jakarta'
 ];
 
-const POPULAR_ROLES = [
+const PILIHAN_JENIS = [
   'Operator Produksi',
-  'Quality Control (QC)',
-  'Maintenance Mesin',
-  'Staff Gudang',
-  'Operator CNC',
-  'Magang Jepang'
+  'QC',
+  'Staff',
+  'Cleaning Service',
+  'Operator Alat'
 ];
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -39,17 +38,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(keywords.trim(), location.trim());
+    onSearch(keywords.toLowerCase(), location.toLowerCase());
   };
 
-  const handleQuickKeyword = (val: string) => {
+  const handleJenisChange = (val: string) => {
     setKeywords(val);
-    onSearch(val, location.trim());
+    onSearch(val.toLowerCase(), location.toLowerCase());
   };
 
-  const handleQuickLocation = (val: string) => {
+  const handleKotaChange = (val: string) => {
     setLocation(val);
-    onSearch(keywords.trim(), val);
+    onSearch(keywords.toLowerCase(), val.toLowerCase());
   };
 
   return (
@@ -75,88 +74,67 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           </div>
         )}
 
-        {/* Form Only 2 Parameters: Jenis Pekerjaan & Lokasi */}
+        {/* Form: 2 Dropdown + Tombol Cari */}
         <form
           onSubmit={handleSubmit}
           className="bg-white rounded-2xl border-2 border-blue-400 p-2 sm:p-3 shadow-lg hover:border-blue-600 transition-colors"
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-            {/* Parameter 1: Jenis Pekerjaan / Keywords */}
+            {/* Dropdown 1: Jenis Pekerjaan */}
             <div className="md:col-span-5 relative flex items-center px-3 py-2.5 bg-neutral-50 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500 border border-neutral-200">
               <Briefcase className="w-5 h-5 text-blue-600 shrink-0 mr-2.5" />
               <div className="w-full">
-                <label htmlFor="search-keywords" className="block text-xs font-bold text-neutral-600 uppercase tracking-wider">
-                  Jenis Pekerjaan / Posisi
+                <label htmlFor="search-jenis" className="block text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                  Jenis Pekerjaan
                 </label>
-                <input
-                  id="search-keywords"
-                  type="text"
+                <select
+                  id="search-jenis"
                   value={keywords}
-                  onChange={(e) => setKeywords(e.target.value)}
-                  placeholder="Contoh: Operator Produksi, QC, Maintenance..."
-                  className="w-full bg-transparent text-neutral-900 text-base font-semibold focus:outline-hidden placeholder:text-neutral-400"
-                />
+                  onChange={(e) => handleJenisChange(e.target.value)}
+                  className="w-full bg-transparent text-neutral-900 text-base font-semibold focus:outline-hidden cursor-pointer"
+                >
+                  <option value="">Semua Jenis Pekerjaan</option>
+                  {PILIHAN_JENIS.map((jenis) => (
+                    <option key={jenis} value={jenis}>{jenis}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            {/* Parameter 2: Lokasi */}
+            {/* Dropdown 2: Kota */}
             <div className="md:col-span-4 relative flex items-center px-3 py-2.5 bg-neutral-50 rounded-xl focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500 border border-neutral-200">
               <MapPin className="w-5 h-5 text-blue-600 shrink-0 mr-2.5" />
               <div className="w-full">
-                <label htmlFor="search-location" className="block text-xs font-bold text-neutral-600 uppercase tracking-wider">
-                  Lokasi / Kawasan Industri
+                <label htmlFor="search-kota" className="block text-xs font-bold text-neutral-600 uppercase tracking-wider">
+                  Lokasi / Kota
                 </label>
-                <input
-                  id="search-location"
-                  type="text"
+                <select
+                  id="search-kota"
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Contoh: Karawang, Cikarang, Solo, Surabaya..."
-                  className="w-full bg-transparent text-neutral-900 text-base font-semibold focus:outline-hidden placeholder:text-neutral-400"
-                />
+                  onChange={(e) => handleKotaChange(e.target.value)}
+                  className="w-full bg-transparent text-neutral-900 text-base font-semibold focus:outline-hidden cursor-pointer"
+                >
+                  <option value="">Semua Kota</option>
+                  {PILIHAN_KOTA.map((kota) => (
+                    <option key={kota} value={kota}>{kota}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            {/* Tombol Cari (Wajib Berwarna Biru) */}
+            {/* Tombol Cari */}
             <div className="md:col-span-3">
               <button
                 type="submit"
                 className="w-full py-3.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-base shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer focus:ring-4 focus:ring-blue-300"
               >
                 <Search className="w-5 h-5" />
-                <span>Cari Lowongan BKK</span>
+                <span>Cari Lowongan</span>
                 <ArrowRight className="w-4 h-4 ml-1 hidden sm:inline" />
               </button>
             </div>
           </div>
         </form>
-
-        {/* Quick Suggestions - All clickable in blue */}
-        <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
-          <span className="text-neutral-700 font-semibold text-xs sm:text-sm">Populer:</span>
-          {POPULAR_ROLES.slice(0, 4).map((role) => (
-            <button
-              key={role}
-              type="button"
-              onClick={() => handleQuickKeyword(role)}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 hover:underline font-semibold bg-sky-50 px-2.5 py-1 rounded-md border border-sky-200 cursor-pointer transition-colors"
-            >
-              + {role}
-            </button>
-          ))}
-          <span className="hidden md:inline text-neutral-300">|</span>
-          <span className="hidden md:inline text-neutral-700 font-semibold text-xs sm:text-sm">Kota Industri:</span>
-          {POPULAR_LOCATIONS.slice(0, 4).map((loc) => (
-            <button
-              key={loc}
-              type="button"
-              onClick={() => handleQuickLocation(loc)}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium bg-sky-50/70 px-2 py-0.5 rounded border border-sky-100 cursor-pointer transition-colors"
-            >
-              📍 {loc}
-            </button>
-          ))}
-        </div>
       </div>
     </section>
   );
