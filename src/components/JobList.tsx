@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
-import { getLowongan, getKotaList, getJenisList, type Lowongan } from "../services/lowonganApi";
+import { getLowongan, type Lowongan } from "../services/lowonganApi";
 
-export default function JobList() {
+interface JobListProps {
+  kota: string;
+  jenis: string;
+}
+
+export default function JobList({ kota, jenis }: JobListProps) {
   const [lowongan, setLowongan] = useState<Lowongan[]>([]);
   const [loading, setLoading] = useState(true);
-  const [kota, setKota] = useState("");
-  const [jenis, setJenis] = useState("");
-  const [kotaList, setKotaList] = useState<string[]>([]);
-  const [jenisList, setJenisList] = useState<string[]>([]);
-
-  useEffect(() => {
-    getKotaList().then(setKotaList);
-    getJenisList().then(setJenisList);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -22,48 +18,62 @@ export default function JobList() {
   }, [kota, jenis]);
 
   return (
-    <div>
-      {/* Filter */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <select value={kota} onChange={(e) => setKota(e.target.value)} style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc" }}>
-          <option value="">Semua Kota</option>
-          {kotaList.map((k) => (
-            <option key={k} value={k}>{k.charAt(0).toUpperCase() + k.slice(1)}</option>
-          ))}
-        </select>
-        <select value={jenis} onChange={(e) => setJenis(e.target.value)} style={{ padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc" }}>
-          <option value="">Semua Jenis Pekerjaan</option>
-          {jenisList.map((j) => (
-            <option key={j} value={j}>{j.charAt(0).toUpperCase() + j.slice(1)}</option>
-          ))}
-        </select>
-      </div>
-
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Loading */}
-      {loading && <p>Memuat lowongan...</p>}
+      {loading && (
+        <p className="text-neutral-600 text-center py-8">Memuat lowongan...</p>
+      )}
+
+      {/* Kosong */}
+      {!loading && lowongan.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-neutral-500 text-lg">Tidak ada lowongan yang cocok.</p>
+          <p className="text-neutral-400 text-sm mt-1">Coba pilih kota atau jenis pekerjaan lain.</p>
+        </div>
+      )}
 
       {/* Hasil */}
-      {!loading && lowongan.length === 0 && <p>Tidak ada lowongan yang cocok.</p>}
-
       {!loading && lowongan.length > 0 && (
         <div>
-          <p style={{ color: "#666", marginBottom: "16px" }}>{lowongan.length} lowongan ditemukan</p>
-          {lowongan.map((job) => (
-            <div key={job.id} style={{ border: "1px solid #e0e0e0", borderRadius: "8px", padding: "16px", marginBottom: "12px", background: "#fff" }}>
-              <h3 style={{ margin: "0 0 8px" }}>{job.judul}</h3>
-              <p style={{ margin: "0 0 4px" }}><strong>{job.perusahaan}</strong> — {job.kota}</p>
-              <p style={{ margin: "0 0 8px" }}>
-                <span style={{ background: "#e8f4fd", padding: "2px 8px", borderRadius: "4px", fontSize: "13px", color: "#0066cc" }}>
-                  {job.jenis_pekerjaan}
-                </span>
-                {" | "}{job.gaji || "Gaji tidak disebutkan"}
-              </p>
-              <p style={{ margin: "0 0 8px", color: "#555" }}>{job.deskripsi.substring(0, 200)}...</p>
-              <a href={job.url} target="_blank" rel="noopener" style={{ color: "#0066cc", textDecoration: "none" }}>
-                Lihat lowongan lengkap →
-              </a>
-            </div>
-          ))}
+          <p className="text-neutral-600 mb-4 font-semibold">
+            {lowongan.length} lowongan ditemukan
+            {kota && ` di ${kota.charAt(0).toUpperCase() + kota.slice(1)}`}
+            {jenis && ` — ${jenis.charAt(0).toUpperCase() + jenis.slice(1)}`}
+          </p>
+          <div className="grid gap-3">
+            {lowongan.map((job) => (
+              <div
+                key={job.id}
+                className="border border-neutral-200 rounded-xl p-4 bg-white hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-neutral-900 mb-1">{job.judul}</h3>
+                    <p className="text-neutral-700 text-sm mb-2">
+                      <strong>{job.perusahaan}</strong> — {job.kota.charAt(0).toUpperCase() + job.kota.slice(1)}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span className="bg-sky-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-sky-200">
+                        {job.jenis_pekerjaan.charAt(0).toUpperCase() + job.jenis_pekerjaan.slice(1)}
+                      </span>
+                      {job.gaji && (
+                        <span className="text-neutral-600 text-sm">{job.gaji}</span>
+                      )}
+                    </div>
+                    <p className="text-neutral-500 text-sm line-clamp-3">{job.deskripsi}</p>
+                  </div>
+                  <a
+                    href={job.url}
+                    target="_blank"
+                    rel="noopener"
+                    className="shrink-0 inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm whitespace-nowrap mt-2 sm:mt-0"
+                  >
+                    Lihat lowongan →
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
