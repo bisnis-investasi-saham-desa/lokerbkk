@@ -43,13 +43,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleJenisChange = (val: string) => {
     setKeywords(val);
-    onSearch(val.toLowerCase(), location.toLowerCase());
-  };
+};
 
-  const handleKotaChange = (val: string) => {
+const handleKotaChange = (val: string) => {
     setLocation(val);
-    onSearch(keywords.toLowerCase(), val.toLowerCase());
-  };
+};
 
   return (
     <section
