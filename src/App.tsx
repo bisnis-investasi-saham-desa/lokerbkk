@@ -57,7 +57,7 @@ export default function App() {
       const loc = queryParams.location || '';
 
       updatePageSeo(
-        `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LOKERBKK.COM`,
+        `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LokerBKK.com`,
         `Daftar lengkap lowongan kerja resmi via BKK sekolah untuk ${kw || 'vokasi SMK/SMA'} di area ${loc || 'Indonesia'}.`,
         `/lowongan?keywords=${encodeURIComponent(kw)}&location=${encodeURIComponent(loc)}`
       );
@@ -90,37 +90,37 @@ export default function App() {
   useEffect(() => {
     if (isHomepage) {
       updatePageSeo(
-        'LOKERBKK.COM - Lowongan Kerja via BKK Sekolah Seluruh Indonesia',
+        'LokerBKK.com - Lowongan Kerja via BKK Sekolah Seluruh Indonesia',
         'Pusat informasi lowongan kerja via BKK sekolah seluruh Indonesia untuk lulusan SMK/SMA.',
         '/'
       );
     } else if (isBkkDirectory && !bkkSlug) {
       updatePageSeo(
-        'Direktori Resmi BKK SMK Seluruh Indonesia | LOKERBKK.COM',
+        'Direktori Resmi BKK SMK Seluruh Indonesia | LokerBKK.com',
         'Daftar lengkap Bursa Kerja Khusus (BKK) SMK terakreditasi.',
         '/bkk-sekolah'
       );
     } else if (isGuides && !guideSlug) {
       updatePageSeo(
-        'Panduan Tes & Seleksi BKK Sekolah | LOKERBKK.COM',
+        'Panduan Tes & Seleksi BKK Sekolah | LokerBKK.com',
         'Kumpulan panduan alur pendaftaran BKK, standar tes fisik, tips psikotes.',
         '/panduan-bkk'
       );
     } else if (isCategories && !categorySlug) {
       updatePageSeo(
-        'Kategori Lowongan Kerja BKK SMK | LOKERBKK.COM',
+        'Kategori Lowongan Kerja BKK SMK | LokerBKK.com',
         'Peluang karir kejuruan berdasarkan jurusan SMK.',
         '/kategori/operator-produksi'
       );
     } else if (isAbout) {
       updatePageSeo(
-        'Tentang LOKERBKK.COM - Standar Rekrutmen BKK Kemnaker RI',
-        'Misi dan landasan hukum portal LOKERBKK.COM.',
+        'Tentang LokerBKK.com - Standar Rekrutmen BKK Kemnaker RI',
+        'Misi dan landasan hukum portal LokerBKK.com.',
         '/tentang-kami'
       );
     } else if (isSitemap) {
       updatePageSeo(
-        'Peta Situs (Sitemap Index) | LOKERBKK.COM',
+        'Peta Situs (Sitemap Index) | LokerBKK.com',
         'Daftar indeks seluruh URL dan halaman lowongan kerja via BKK sekolah.',
         '/sitemap'
       );
