@@ -5,7 +5,7 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { SearchBar } from './components/SearchBar';
 import { PillarContent } from './components/PillarContent';
-import JobList from './components/JobList';
+import { JobList } from './components/JobList';
 import { JobDetail } from './components/JobDetail';
 import { BkkDirectory } from './components/BkkDirectory';
 import { Guides } from './components/Guides';
