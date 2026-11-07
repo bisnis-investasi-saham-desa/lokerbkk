@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { JobItem } from '../types';
+import { Lowongan } from '../services/lowonganApi';
 import { updatePageSeo } from '../hooks/useRouter';
 import {
   Building2,
@@ -19,8 +19,8 @@ import {
 } from 'lucide-react';
 
 interface JobDetailProps {
-  job: JobItem;
-  allJobs: JobItem[];
+  job: Lowongan;
+  allJobs: Lowongan[];
   onBack: () => void;
   onNavigate: (href: string) => void;
 }
@@ -32,29 +32,28 @@ export const JobDetail: React.FC<JobDetailProps> = ({
   onNavigate
 }) => {
   useEffect(() => {
-    // Generate JobPosting Schema.org JSON-LD structured data for Googlebot
     const jobPostingSchema = {
       '@context': 'https://schema.org/',
       '@type': 'JobPosting',
-      title: job.title,
-      description: job.snippet + (job.description ? `\n\n${job.description}` : ''),
+      title: job.judul,
+      description: job.deskripsi,
       identifier: {
         '@type': 'PropertyValue',
-        name: job.company,
+        name: job.perusahaan,
         value: job.id
       },
-      datePosted: job.updated || new Date().toISOString(),
+      datePosted: job.tanggal_ambil || new Date().toISOString(),
       employmentType: 'FULL_TIME',
       hiringOrganization: {
         '@type': 'Organization',
-        name: job.company,
+        name: job.perusahaan,
         sameAs: 'https://lokerbkk.com'
       },
       jobLocation: {
         '@type': 'Place',
         address: {
           '@type': 'PostalAddress',
-          addressLocality: job.location,
+          addressLocality: job.kota,
           addressCountry: 'ID'
         }
       },
@@ -70,8 +69,8 @@ export const JobDetail: React.FC<JobDetailProps> = ({
     };
 
     updatePageSeo(
-      `${job.title} - ${job.company} | LOKERBKK.COM`,
-      `Lowongan kerja ${job.title} di ${job.company} (${job.location}) via BKK sekolah resmi. Pendaftaran terbuka untuk lulusan SMK/SMA sederajat.`,
+      `${job.judul} - ${job.perusahaan} | LOKERBKK.COM`,
+      `Lowongan kerja ${job.judul} di ${job.perusahaan} (${job.kota}) via BKK sekolah resmi. Pendaftaran terbuka untuk lulusan SMK/SMA sederajat.`,
       `/lowongan/${job.id}`,
       jobPostingSchema
     );
@@ -80,8 +79,8 @@ export const JobDetail: React.FC<JobDetailProps> = ({
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: `${job.title} - ${job.company}`,
-        text: `Info lowongan kerja via BKK Sekolah: ${job.title} di ${job.company}`,
+        title: `${job.judul} - ${job.perusahaan}`,
+        text: `Info lowongan kerja via BKK Sekolah: ${job.judul} di ${job.perusahaan}`,
         url: window.location.href
       });
     } else {
@@ -90,7 +89,6 @@ export const JobDetail: React.FC<JobDetailProps> = ({
     }
   };
 
-  // Find related jobs
   const relatedJobs = allJobs
     .filter((j) => j.id !== job.id)
     .slice(0, 3);
@@ -98,7 +96,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({
   return (
     <div className="w-full bg-white text-neutral-900 py-6 font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        {/* Breadcrumb Navigation - BreadcrumbList Schema */}
+        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="mb-6 text-sm">
           <ol className="flex items-center space-x-2 text-neutral-600 flex-wrap">
             <li>
@@ -125,12 +123,12 @@ export const JobDetail: React.FC<JobDetailProps> = ({
             </li>
             <li>/</li>
             <li className="font-semibold text-neutral-900 truncate max-w-xs">
-              {job.title}
+              {job.judul}
             </li>
           </ol>
         </nav>
 
-        {/* Back Button (Clickable in Blue) */}
+        {/* Back Button */}
         <button
           type="button"
           onClick={onBack}
@@ -152,45 +150,31 @@ export const JobDetail: React.FC<JobDetailProps> = ({
                 <span className="text-xs font-semibold text-neutral-700 bg-white px-3 py-1 rounded-full border border-sky-200">
                   ID Lowongan: #{job.id}
                 </span>
+                <span className="text-xs font-semibold text-blue-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+                  {job.jenis_pekerjaan.charAt(0).toUpperCase() + job.jenis_pekerjaan.slice(1)}
+                </span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
-                {job.title}
+                {job.judul}
               </h1>
 
               <div className="flex flex-wrap items-center gap-y-2 gap-x-5 text-sm sm:text-base font-semibold text-neutral-900">
                 <span className="flex items-center gap-1.5">
                   <Building2 className="w-5 h-5 text-blue-600" />
-                  {job.company}
+                  {job.perusahaan}
                 </span>
                 <span className="flex items-center gap-1.5 text-neutral-700">
                   <MapPin className="w-5 h-5 text-blue-600" />
-                  {job.location}
+                  {job.kota.charAt(0).toUpperCase() + job.kota.slice(1)}
                 </span>
-                {job.salary && (
+                {job.gaji && (
                   <span className="flex items-center gap-1.5 text-emerald-700 bg-emerald-100/70 px-3 py-1 rounded-lg border border-emerald-300 font-bold">
                     <DollarSign className="w-4 h-4" />
-                    {job.salary}
+                    {job.gaji}
                   </span>
                 )}
               </div>
-
-              {job.bkkSchool && (
-                <div className="p-3 bg-white rounded-xl border border-sky-200 text-sm">
-                  <span className="font-bold text-blue-800">Sekolah Penyelenggara BKK: </span>
-                  <a
-                    href="/bkk-sekolah"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onNavigate('/bkk-sekolah');
-                    }}
-                    className="text-blue-600 hover:text-blue-800 underline font-semibold"
-                  >
-                    {job.bkkSchool}
-                  </a>{' '}
-                  <span className="text-neutral-500">• Terverifikasi Dinas Ketenagakerjaan</span>
-                </div>
-              )}
             </div>
 
             <div className="shrink-0 flex flex-col gap-2.5">
@@ -218,37 +202,37 @@ export const JobDetail: React.FC<JobDetailProps> = ({
           </div>
         </div>
 
-        {/* Grid: 2 Kolom (Detail Utama & Sidebar Kualifikasi) */}
+        {/* Grid: 2 Kolom */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content (8 cols) */}
           <div className="lg:col-span-8 space-y-8">
-            {/* Ringkasan Pekerjaan */}
+            {/* Deskripsi Pekerjaan */}
             <section className="space-y-3">
               <h2 className="text-xl font-extrabold text-neutral-900 border-l-4 border-blue-600 pl-3">
                 Deskripsi Pekerjaan & Tanggung Jawab
               </h2>
-              <p className="text-base text-neutral-900 leading-relaxed">
-                {job.snippet}
+              <p className="text-base text-neutral-900 leading-relaxed whitespace-pre-line">
+                {job.deskripsi}
               </p>
               <p className="text-base text-neutral-900 leading-relaxed">
                 Kandidat yang lolos seleksi bursa kerja khusus ini akan ditempatkan di lini produksi atau divisi pendukung dengan sistem kerja shift bergilir (pagi, sore, malam), didukung dengan pelatihan Standar Operasional Prosedur (SOP) dan Keselamatan & Kesehatan Kerja (K3) berstandar internasional.
               </p>
             </section>
 
-            {/* Tahapan Seleksi BKK Sekolah */}
+            {/* Tahapan Seleksi */}
             <section className="space-y-3">
               <h2 className="text-xl font-extrabold text-neutral-900 border-l-4 border-blue-600 pl-3">
                 Tahapan Seleksi Rekrutmen BKK
               </h2>
               <div className="space-y-2.5 mt-3">
-                {(job.selectionStages || [
+                {[
                   'Seleksi Administrasi & Verifikasi Ijazah Asli',
                   'Pengukuran Fisik & Tes Buta Warna Ishihara',
                   'Psikotes Kraepelin / Pauli & Matematika Dasar',
                   'Interview User & HRD Perusahaan',
                   'Medical Check Up (MCU) di Klinik Mitra Resmi',
                   'Tanda Tangan Kontrak Kerja PKWT'
-                ]).map((stage, idx) => (
+                ].map((stage, idx) => (
                   <div
                     key={idx}
                     className="p-3.5 rounded-xl border border-neutral-200 bg-white flex items-start gap-3"
@@ -322,17 +306,17 @@ export const JobDetail: React.FC<JobDetailProps> = ({
                   1. Siapkan berkas lamaran lengkap berupa fotokopi Ijazah / Surat Keterangan Lulus (SKL), KTP, Kartu Keluarga, SKCK aktif, dan pas foto 3x4 berwarna (2 lembar).
                 </p>
                 <p>
-                  2. Kunjungi sekretariat BKK di sekolah penyelenggara ({job.bkkSchool || 'BKK Terkait'}) atau isi formulir online pendaftaran bursa kerja khusus.
+                  2. Kunjungi sekretariat BKK di sekolah penyelenggara atau isi formulir online pendaftaran bursa kerja khusus.
                 </p>
                 <p>
-                  3. Ikuti jadwal tes fisik dan psikotes yang diumumkan melalui pengumuman resmi mading BKK sekolah.
+                  3. Ikuti jadwal tes fisik dan psikotes yang diumumkan melalui pengumuman resmi madding BKK sekolah.
                 </p>
               </div>
 
-              {job.link && (
+              {job.url && (
                 <div className="pt-2">
                   <a
-                    href={job.link}
+                    href={job.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm"
@@ -345,7 +329,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({
             </section>
           </div>
 
-          {/* Sidebar Kualifikasi (4 cols) */}
+          {/* Sidebar (4 cols) */}
           <div className="lg:col-span-4 space-y-6">
             <div className="p-5 rounded-2xl border border-neutral-200 bg-white shadow-xs space-y-4">
               <h3 className="font-extrabold text-lg text-neutral-900 border-b border-neutral-200 pb-3">
@@ -359,25 +343,21 @@ export const JobDetail: React.FC<JobDetailProps> = ({
                 </div>
 
                 <div>
-                  <span className="block text-xs font-bold text-neutral-500 uppercase">Jurusan SMK Prioritas</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {(job.jurusanSMK || ['Semua Jurusan Teknik', 'Otomotif', 'Mesin']).map((j, i) => (
-                      <span key={i} className="text-xs font-semibold bg-sky-50 text-blue-700 px-2 py-0.5 rounded border border-sky-200">
-                        {j}
-                      </span>
-                    ))}
-                  </div>
+                  <span className="block text-xs font-bold text-neutral-500 uppercase">Jenis Pekerjaan</span>
+                  <span className="font-bold text-blue-700 text-base">
+                    {job.jenis_pekerjaan.charAt(0).toUpperCase() + job.jenis_pekerjaan.slice(1)}
+                  </span>
                 </div>
 
                 <div>
                   <span className="block text-xs font-bold text-neutral-500 uppercase">Jenis Kelamin</span>
-                  <span className="font-bold text-neutral-900 text-base">{job.genderRequirement || 'Pria / Wanita'}</span>
+                  <span className="font-bold text-neutral-900 text-base">Pria / Wanita</span>
                 </div>
 
                 <div>
                   <span className="block text-xs font-bold text-neutral-500 uppercase">Standar Tinggi Badan</span>
                   <span className="font-bold text-neutral-900 text-base">
-                    Pria min. {job.minHeight?.male || 165} cm / Wanita min. {job.minHeight?.female || 155} cm
+                    Pria min. 165 cm / Wanita min. 155 cm
                   </span>
                 </div>
 
@@ -393,7 +373,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({
               </div>
             </div>
 
-            {/* Related Jobs Widget (Clickable in Blue) */}
+            {/* Related Jobs */}
             <div className="p-5 rounded-2xl border border-neutral-200 bg-white shadow-xs space-y-3">
               <h3 className="font-extrabold text-base text-neutral-900">
                 Lowongan BKK Terkait
@@ -409,10 +389,10 @@ export const JobDetail: React.FC<JobDetailProps> = ({
                       }}
                       className="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline block"
                     >
-                      {rj.title}
+                      {rj.judul}
                     </a>
                     <span className="text-xs text-neutral-600 block mt-0.5">
-                      {rj.company} • {rj.location}
+                      {rj.perusahaan} • {rj.kota.charAt(0).toUpperCase() + rj.kota.slice(1)}
                     </span>
                   </div>
                 ))}
