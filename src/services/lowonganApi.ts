@@ -1,4 +1,4 @@
-const API_URL = "https://lokerbkk-api.profilku179.workers.dev";
+const API_URL = "https://kemenaker.lokerbkk.com";
 
 export interface Lowongan {
   id: number;
