@@ -7,7 +7,7 @@ interface JobListProps {
   onNavigate: (path: string) => void;
 }
 
-export default function JobList({ lowongan, isLoading, onSelectJob, onNavigate }: JobListProps) {
+export function JobList({ lowongan, isLoading, onSelectJob, onNavigate }: JobListProps) {
   const handleClick = (job: Lowongan) => {
     onSelectJob(job);
     onNavigate(`/lowongan/${job.id}`);
