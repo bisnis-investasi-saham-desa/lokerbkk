@@ -10,35 +10,35 @@ export const SitemapView: React.FC<SitemapViewProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<'html' | 'xml'>('html');
 
   const links = [
-    { url: 'https://lokerbkk.com/', label: 'Beranda LOKERBKK.COM (Fokus Keyword: Lowongan kerja via BKK sekolah seluruh indonesia)', priority: '1.0', changefreq: 'daily' },
-    { url: 'https://lokerbkk.com/lowongan?keywords=Operator+Produksi&location=Karawang', label: 'Loker Operator Produksi Kawasan Karawang', priority: '0.9', changefreq: 'daily' },
-    { url: 'https://lokerbkk.com/lowongan?keywords=Quality+Control&location=Cikarang', label: 'Loker Quality Control Kawasan Cikarang', priority: '0.9', changefreq: 'daily' },
-    { url: 'https://lokerbkk.com/lowongan?keywords=Maintenance+Mesin&location=Bekasi', label: 'Loker Maintenance Mesin Kawasan Bekasi', priority: '0.9', changefreq: 'daily' },
-    { url: 'https://lokerbkk.com/lowongan?keywords=Staff+Gudang&location=Surabaya', label: 'Loker Staff Gudang & Logistik Surabaya', priority: '0.8', changefreq: 'daily' },
-    { url: 'https://lokerbkk.com/bkk-sekolah', label: 'Direktori Resmi BKK SMK Seluruh Indonesia', priority: '0.9', changefreq: 'weekly' },
+    { url: 'https://www.lokerbkk.com/', label: 'Beranda LOKERBKK.COM (Fokus Keyword: Lowongan kerja via BKK sekolah seluruh indonesia)', priority: '1.0', changefreq: 'daily' },
+    { url: 'https://www.lokerbkk.com/lowongan?keywords=Operator+Produksi&location=Karawang', label: 'Loker Operator Produksi Kawasan Karawang', priority: '0.9', changefreq: 'daily' },
+    { url: 'https://www.lokerbkk.com/lowongan?keywords=Quality+Control&location=Cikarang', label: 'Loker Quality Control Kawasan Cikarang', priority: '0.9', changefreq: 'daily' },
+    { url: 'https://www.lokerbkk.com/lowongan?keywords=Maintenance+Mesin&location=Bekasi', label: 'Loker Maintenance Mesin Kawasan Bekasi', priority: '0.9', changefreq: 'daily' },
+    { url: 'https://www.lokerbkk.com/lowongan?keywords=Staff+Gudang&location=Surabaya', label: 'Loker Staff Gudang & Logistik Surabaya', priority: '0.8', changefreq: 'daily' },
+    { url: 'https://www.lokerbkk.com/bkk-sekolah', label: 'Direktori Resmi BKK SMK Seluruh Indonesia', priority: '0.9', changefreq: 'weekly' },
     ...BKK_SCHOOLS.map((s) => ({
-      url: `https://lokerbkk.com/bkk-sekolah/${s.slug}`,
+      url: `https://www.lokerbkk.com/bkk-sekolah/${s.slug}`,
       label: `Profil Rekrutmen ${s.name} (${s.city})`,
       priority: '0.8',
       changefreq: 'weekly'
     })),
-    { url: 'https://lokerbkk.com/panduan-bkk', label: 'Pusat Panduan Tes & Alur Seleksi BKK', priority: '0.9', changefreq: 'weekly' },
+    { url: 'https://www.lokerbkk.com/panduan-bkk', label: 'Pusat Panduan Tes & Alur Seleksi BKK', priority: '0.9', changefreq: 'weekly' },
     ...BKK_GUIDES.map((g) => ({
-      url: `https://lokerbkk.com/panduan-bkk/${g.slug}`,
+      url: `https://www.lokerbkk.com/panduan-bkk/${g.slug}`,
       label: g.title,
       priority: '0.8',
       changefreq: 'monthly'
     })),
     ...JOB_CATEGORIES.map((c) => ({
-      url: `https://lokerbkk.com/kategori/${c.slug}`,
+      url: `https://www.lokerbkk.com/kategori/${c.slug}`,
       label: `Lowongan BKK Kategori ${c.name}`,
       priority: '0.8',
       changefreq: 'weekly'
     })),
-    { url: 'https://lokerbkk.com/tentang-kami', label: 'Tentang LOKERBKK.COM', priority: '0.5', changefreq: 'monthly' },
-    { url: 'https://lokerbkk.com/kebijakan-privasi', label: 'Kebijakan Privasi LokerBKK', priority: '0.3', changefreq: 'yearly' },
-    { url: 'https://lokerbkk.com/syarat-ketentuan', label: 'Syarat & Ketentuan Layanan', priority: '0.3', changefreq: 'yearly' },
-    { url: 'https://lokerbkk.com/kontak', label: 'Hubungi Pengelola & Pendaftaran BKK Baru', priority: '0.4', changefreq: 'monthly' }
+    { url: 'https://www.lokerbkk.com/tentang-kami', label: 'Tentang LOKERBKK.COM', priority: '0.5', changefreq: 'monthly' },
+    { url: 'https://www.lokerbkk.com/kebijakan-privasi', label: 'Kebijakan Privasi LokerBKK', priority: '0.3', changefreq: 'yearly' },
+    { url: 'https://www.lokerbkk.com/syarat-ketentuan', label: 'Syarat & Ketentuan Layanan', priority: '0.3', changefreq: 'yearly' },
+    { url: 'https://www.lokerbkk.com/kontak', label: 'Hubungi Pengelola & Pendaftaran BKK Baru', priority: '0.4', changefreq: 'monthly' }
   ];
 
   const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -116,7 +116,7 @@ ${links
         {activeTab === 'html' ? (
           <div className="divide-y divide-neutral-100 border border-neutral-200 rounded-2xl bg-white p-4 sm:p-6 shadow-xs space-y-3">
             {links.map((link, idx) => {
-              const localPath = link.url.replace('https://lokerbkk.com', '');
+              const localPath = link.url.replace('https://www.lokerbkk.com', '');
               return (
                 <div key={idx} className="pt-3 first:pt-0 flex items-start justify-between gap-4">
                   <div>
