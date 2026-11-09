@@ -115,7 +115,7 @@ export function updatePageSeo(
     document.head.appendChild(canonicalEl);
   }
   const cleanPath = canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`;
-  canonicalEl.setAttribute('href', `https://lokerbkk.com${cleanPath}`);
+  canonicalEl.setAttribute('href', `https://www.lokerbkk.com${cleanPath}`);
 
   // Dynamic Page-Level Structured Data (JSON-LD)
   let dynamicScript = document.getElementById('dynamic-page-schema') as HTMLScriptElement | null;
