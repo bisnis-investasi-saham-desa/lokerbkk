@@ -97,6 +97,16 @@ export default function App() {
     }
   }, [isJobDetail, jobIdFromPath, lowonganResults]);
 
+// Load lowongan untuk beranda
+  useEffect(() => {
+    if (isHomepage) {
+      setIsHomeLoading(true);
+      getLowongan("", "")
+        .then((data) => setHomeLowongan(data.lowongan))
+        .finally(() => setIsHomeLoading(false));
+    }
+  }, [isHomepage]);
+  
   // Dynamic SEO per route
   useEffect(() => {
     if (isHomepage) {
