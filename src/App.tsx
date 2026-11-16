@@ -134,16 +134,24 @@ export default function App() {
       <main className="flex-1 w-full bg-white">
         {/* HOMEPAGE */}
         {isHomepage && (
-          <>
-            <SearchBar
-              initialKeywords=""
-              initialLocation=""
-              onSearch={handlePerformSearch}
-              isCompact={false}
-            />
-            <PillarContent onNavigate={navigate} />
-          </>
-        )}
+  <>
+    <SearchBar
+      initialKeywords=""
+      initialLocation=""
+      onSearch={handlePerformSearch}
+      isCompact={false}
+    />
+    <JobList
+      lowongan={homeLowongan}
+      isLoading={isHomeLoading}
+      onSelectJob={(job) => setSelectedJob(job)}
+      onNavigate={navigate}
+      limit={12}
+      showViewAll={true}
+    />
+    <PillarContent onNavigate={navigate} />
+  </>
+)}
 
         {/* SEARCH RESULTS */}
         {isSearchPage && (
