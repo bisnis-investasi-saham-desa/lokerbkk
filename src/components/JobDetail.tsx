@@ -321,7 +321,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm"
                   >
-                    <span>Buka Tautan Eksternal Mitra</span>
+                    <span>Proses dan Kirim Lamaran Anda Disini</span>
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
