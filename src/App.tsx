@@ -17,14 +17,12 @@ import { PrivacyView, TermsView, ContactView } from './components/LegalViews';
 export default function App() {
   const { path, queryParams, navigate } = useRouter();
 
-  // Search state
   const [lowonganResults, setLowonganResults] = useState<Lowongan[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [homeLowongan, setHomeLowongan] = useState<Lowongan[]>([]);
   const [isHomeLoading, setIsHomeLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Lowongan | null>(null);
 
-  // Determine current active view
   const isHomepage = path === '/' || path === '';
   const isSearchPage = path.startsWith('/lowongan') && !path.startsWith('/lowongan/');
   const isJobDetail = path.startsWith('/lowongan/');
@@ -37,13 +35,11 @@ export default function App() {
   const isContact = path === '/kontak';
   const isSitemap = path === '/sitemap';
 
-  // Sub-slug extraction
   const bkkSlug = isBkkDirectory && path !== '/bkk-sekolah' ? path.replace('/bkk-sekolah/', '') : undefined;
   const guideSlug = isGuides && path !== '/panduan-bkk' ? path.replace('/panduan-bkk/', '') : undefined;
   const categorySlug = isCategories && path !== '/kategori' ? path.replace('/kategori/', '') : undefined;
   const jobIdFromPath = isJobDetail ? path.replace('/lowongan/', '') : null;
 
-  // Handle Search: navigate to /lowongan with query params
   const handlePerformSearch = useCallback(
     (keywords: string, location: string) => {
       const searchUrl = `/lowongan?keywords=${encodeURIComponent(keywords)}&location=${encodeURIComponent(location)}`;
@@ -52,52 +48,6 @@ export default function App() {
     [navigate]
   );
 
-  // When on /lowongan page, call API (keywords = jenis, location = kota)
-  useEffect(() => {
-    if (isSearchPage) {
-      const kw = queryParams.keywords || '';
-      const loc = queryParams.location || '';
-
-   useEffect(() => {
-  if (isHomepage) {
-    setIsHomeLoading(true);
-    getLowongan("", "")
-      .then((data) => setHomeLowongan(data.lowongan))
-      .finally(() => setIsHomeLoading(false));
-  }
-}, [isHomepage]);
-      
-      updatePageSeo(
-        `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LokerBKK.com`,
-        `Daftar lengkap lowongan kerja resmi via BKK sekolah untuk ${kw || 'vokasi SMK/SMA'} di area ${loc || 'Indonesia'}.`,
-        `/lowongan?keywords=${encodeURIComponent(kw)}&location=${encodeURIComponent(loc)}`
-      );
-
-      setIsSearching(true);
-      // getLowongan(kota, jenis) — loc = kota, kw = jenis
-      getLowongan(loc, kw)
-        .then((data) => setLowonganResults(data.lowongan))
-        .finally(() => setIsSearching(false));
-    }
-  }, [isSearchPage, queryParams.keywords, queryParams.location]);
-
-  // When on /lowongan/:id, find the job from results
-  useEffect(() => {
-    if (isJobDetail && jobIdFromPath) {
-      const found = lowonganResults.find((j) => String(j.id) === jobIdFromPath);
-      if (found) {
-        setSelectedJob(found);
-      } else {
-        // Job not in current results, fetch all then find
-        getLowongan('', '').then((data) => {
-          const match = data.lowongan.find((j) => String(j.id) === jobIdFromPath);
-          if (match) setSelectedJob(match);
-        });
-      }
-    }
-  }, [isJobDetail, jobIdFromPath, lowonganResults]);
-
-// Load lowongan untuk beranda
   useEffect(() => {
     if (isHomepage) {
       setIsHomeLoading(true);
@@ -106,8 +56,39 @@ export default function App() {
         .finally(() => setIsHomeLoading(false));
     }
   }, [isHomepage]);
-  
-  // Dynamic SEO per route
+
+  useEffect(() => {
+    if (isSearchPage) {
+      const kw = queryParams.keywords || '';
+      const loc = queryParams.location || '';
+
+      updatePageSeo(
+        `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LokerBKK.com`,
+        `Daftar lengkap lowongan kerja resmi via BKK sekolah untuk ${kw || 'vokasi SMK/SMA'} di area ${loc || 'Indonesia'}.`,
+        `/lowongan?keywords=${encodeURIComponent(kw)}&location=${encodeURIComponent(loc)}`
+      );
+
+      setIsSearching(true);
+      getLowongan(loc, kw)
+        .then((data) => setLowonganResults(data.lowongan))
+        .finally(() => setIsSearching(false));
+    }
+  }, [isSearchPage, queryParams.keywords, queryParams.location]);
+
+  useEffect(() => {
+    if (isJobDetail && jobIdFromPath) {
+      const found = lowonganResults.find((j) => String(j.id) === jobIdFromPath);
+      if (found) {
+        setSelectedJob(found);
+      } else {
+        getLowongan('', '').then((data) => {
+          const match = data.lowongan.find((j) => String(j.id) === jobIdFromPath);
+          if (match) setSelectedJob(match);
+        });
+      }
+    }
+  }, [isJobDetail, jobIdFromPath, lowonganResults]);
+
   useEffect(() => {
     if (isHomepage) {
       updatePageSeo(
@@ -153,28 +134,26 @@ export default function App() {
       <Header currentPath={path} onNavigate={navigate} />
 
       <main className="flex-1 w-full bg-white">
-        {/* HOMEPAGE */}
         {isHomepage && (
-  <>
-    <SearchBar
-      initialKeywords=""
-      initialLocation=""
-      onSearch={handlePerformSearch}
-      isCompact={false}
-    />
-    <JobList
-      lowongan={homeLowongan}
-      isLoading={isHomeLoading}
-      onSelectJob={(job) => setSelectedJob(job)}
-      onNavigate={navigate}
-      limit={12}
-      showViewAll={true}
-    />
-    <PillarContent onNavigate={navigate} />
-  </>
-)}
+          <>
+            <SearchBar
+              initialKeywords=""
+              initialLocation=""
+              onSearch={handlePerformSearch}
+              isCompact={false}
+            />
+            <JobList
+              lowongan={homeLowongan}
+              isLoading={isHomeLoading}
+              onSelectJob={(job) => setSelectedJob(job)}
+              onNavigate={navigate}
+              limit={12}
+              showViewAll={true}
+            />
+            <PillarContent onNavigate={navigate} />
+          </>
+        )}
 
-        {/* SEARCH RESULTS */}
         {isSearchPage && (
           <>
             <SearchBar
@@ -192,7 +171,6 @@ export default function App() {
           </>
         )}
 
-        {/* JOB DETAIL */}
         {isJobDetail && selectedJob && (
           <JobDetail
             job={selectedJob}
@@ -206,7 +184,6 @@ export default function App() {
           />
         )}
 
-        {/* BKK DIRECTORY */}
         {isBkkDirectory && (
           <BkkDirectory
             onNavigate={navigate}
@@ -215,10 +192,8 @@ export default function App() {
           />
         )}
 
-        {/* GUIDES */}
         {isGuides && <Guides onNavigate={navigate} selectedGuideSlug={guideSlug} />}
 
-        {/* CATEGORIES */}
         {isCategories && (
           <CategoriesView
             onNavigate={navigate}
@@ -227,15 +202,10 @@ export default function App() {
           />
         )}
 
-        {/* ABOUT */}
         {isAbout && <AboutView onNavigate={navigate} />}
-
-        {/* LEGAL */}
         {isPrivacy && <PrivacyView onNavigate={navigate} />}
         {isTerms && <TermsView onNavigate={navigate} />}
         {isContact && <ContactView onNavigate={navigate} />}
-
-        {/* SITEMAP */}
         {isSitemap && <SitemapView onNavigate={navigate} />}
       </main>
 
