@@ -5,37 +5,38 @@ interface JobListProps {
   isLoading: boolean;
   onSelectJob: (job: Lowongan) => void;
   onNavigate: (path: string) => void;
+  limit?: number;
+  showViewAll?: boolean;
 }
 
-export function JobList({ lowongan, isLoading, onSelectJob, onNavigate }: JobListProps) {
+export function JobList({ lowongan, isLoading, onSelectJob, onNavigate, limit, showViewAll }: JobListProps) {
   const handleClick = (job: Lowongan) => {
     onSelectJob(job);
     onNavigate(`/lowongan/${job.id}`);
   };
 
+  const displayLowongan = limit ? lowongan.slice(0, limit) : lowongan;
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      {/* Loading */}
       {isLoading && (
         <p className="text-neutral-600 text-center py-8">Memuat lowongan...</p>
       )}
 
-      {/* Empty */}
-      {!isLoading && lowongan.length === 0 && (
+      {!isLoading && displayLowongan.length === 0 && (
         <div className="text-center py-12">
           <p className="text-neutral-500 text-lg">Tidak ada lowongan yang cocok.</p>
           <p className="text-neutral-400 text-sm mt-1">Coba pilih kota atau jenis pekerjaan lain.</p>
         </div>
       )}
 
-      {/* Results */}
-      {!isLoading && lowongan.length > 0 && (
+      {!isLoading && displayLowongan.length > 0 && (
         <div>
           <p className="text-neutral-600 mb-4 font-semibold">
-            {lowongan.length} lowongan ditemukan
+            {displayLowongan.length} lowongan ditemukan
           </p>
           <div className="grid gap-3">
-            {lowongan.map((job) => (
+            {displayLowongan.map((job) => (
               <div
                 key={job.id}
                 onClick={() => handleClick(job)}
@@ -55,15 +56,33 @@ export function JobList({ lowongan, isLoading, onSelectJob, onNavigate }: JobLis
                         <span className="text-neutral-600 text-sm">{job.gaji}</span>
                       )}
                     </div>
-                    <p className="text-neutral-500 text-sm line-clamp-3">{job.deskripsi}</p>
+                    <p className="text-neutral-500 text-sm line-clamp-2">{job.deskripsi}</p>
                   </div>
-                  <span className="shrink-0 text-blue-600 font-semibold text-sm whitespace-nowrap mt-2 sm:mt-0">
-                    Lihat detail →
-                  </span>
+                  <a
+                    href={job.url}
+                    target="_blank"
+                    rel="noopener"
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0 inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-semibold text-sm whitespace-nowrap mt-2 sm:mt-0"
+                  >
+                    Lihat lowongan →
+                  </a>
                 </div>
               </div>
             ))}
           </div>
+
+          {showViewAll && limit && lowongan.length > limit && (
+            <div className="text-center mt-6">
+              <button
+                type="button"
+                onClick={() => onNavigate("/lowongan?keywords=&location=")}
+                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-md cursor-pointer transition-colors"
+              >
+                Lihat Semua Lowongan ({lowongan.length})
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
