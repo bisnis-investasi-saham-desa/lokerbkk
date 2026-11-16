@@ -20,6 +20,8 @@ export default function App() {
   // Search state
   const [lowonganResults, setLowonganResults] = useState<Lowongan[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [homeLowongan, setHomeLowongan] = useState<Lowongan[]>([]);
+  const [isHomeLoading, setIsHomeLoading] = useState(true);
   const [selectedJob, setSelectedJob] = useState<Lowongan | null>(null);
 
   // Determine current active view
@@ -56,6 +58,15 @@ export default function App() {
       const kw = queryParams.keywords || '';
       const loc = queryParams.location || '';
 
+   useEffect(() => {
+  if (isHomepage) {
+    setIsHomeLoading(true);
+    getLowongan("", "")
+      .then((data) => setHomeLowongan(data.lowongan))
+      .finally(() => setIsHomeLoading(false));
+  }
+}, [isHomepage]);
+      
       updatePageSeo(
         `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LokerBKK.com`,
         `Daftar lengkap lowongan kerja resmi via BKK sekolah untuk ${kw || 'vokasi SMK/SMA'} di area ${loc || 'Indonesia'}.`,
