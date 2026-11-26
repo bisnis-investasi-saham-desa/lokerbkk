@@ -33,7 +33,7 @@ export function JobList({ lowongan, isLoading, onSelectJob, onNavigate, limit, s
       {!isLoading && displayLowongan.length > 0 && (
         <div>
           <p className="text-neutral-600 mb-4 font-semibold">
-            {displayLowongan.length} lowongan ditemukan
+             Lowongan Kerja Untuk Anda
           </p>
           <div className="grid gap-3">
             {displayLowongan.map((job) => (
