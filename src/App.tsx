@@ -59,17 +59,19 @@ export default function App() {
 
   useEffect(() => {
     if (isSearchPage) {
-      const kw = queryParams.keywords || '';
-      const loc = queryParams.location || '';
+      const rawKw = queryParams.keywords || '';
+      const rawLoc = queryParams.location || '';
+      const kw = rawKw ? rawKw.charAt(0).toUpperCase() + rawKw.slice(1) : '';
+      const loc = rawLoc ? rawLoc.charAt(0).toUpperCase() + rawLoc.slice(1) : '';
 
       updatePageSeo(
         `Lowongan Kerja ${kw || 'BKK'} di ${loc || 'Seluruh Indonesia'} | LokerBKK.com`,
         `Daftar lengkap lowongan kerja resmi via BKK sekolah untuk ${kw || 'vokasi SMK/SMA'} di area ${loc || 'Indonesia'}.`,
-        `/lowongan?keywords=${encodeURIComponent(kw)}&location=${encodeURIComponent(loc)}`
+        `/lowongan?keywords=${encodeURIComponent(rawKw)}&location=${encodeURIComponent(rawLoc)}`
       );
 
       setIsSearching(true);
-      getLowongan(loc, kw)
+      getLowongan(rawLoc, rawKw)
         .then((data) => setLowonganResults(data.lowongan))
         .finally(() => setIsSearching(false));
     }
@@ -120,6 +122,12 @@ export default function App() {
         'Misi dan landasan hukum portal LokerBKK.com.',
         '/tentang-kami'
       );
+    } else if (isPrivacy) {
+      updatePageSeo('Kebijakan Privasi | LokerBKK.com', 'Kebijakan privasi LokerBKK.com.', '/kebijakan-privasi');
+    } else if (isTerms) {
+      updatePageSeo('Syarat & Ketentuan | LokerBKK.com', 'Syarat dan ketentuan LokerBKK.com.', '/syarat-ketentuan');
+    } else if (isContact) {
+      updatePageSeo('Kontak | LokerBKK.com', 'Hubungi LokerBKK.com.', '/kontak');
     } else if (isSitemap) {
       updatePageSeo(
         'Peta Situs (Sitemap Index) | LokerBKK.com',
@@ -127,7 +135,7 @@ export default function App() {
         '/sitemap'
       );
     }
-  }, [isHomepage, isBkkDirectory, bkkSlug, isGuides, guideSlug, isCategories, categorySlug, isAbout, isSitemap]);
+  }, [isHomepage, isBkkDirectory, bkkSlug, isGuides, guideSlug, isCategories, categorySlug, isAbout, isPrivacy, isTerms, isContact, isSitemap]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-neutral-900 font-sans selection:bg-blue-100 selection:text-blue-900">
@@ -136,38 +144,16 @@ export default function App() {
       <main className="flex-1 w-full bg-white">
         {isHomepage && (
           <>
-            <SearchBar
-              initialKeywords=""
-              initialLocation=""
-              onSearch={handlePerformSearch}
-              isCompact={false}
-            />
-            <JobList
-              lowongan={homeLowongan}
-              isLoading={isHomeLoading}
-              onSelectJob={(job) => setSelectedJob(job)}
-              onNavigate={navigate}
-              limit={12}
-              showViewAll={true}
-            />
+            <SearchBar initialKeywords="" initialLocation="" onSearch={handlePerformSearch} isCompact={false} />
+            <JobList lowongan={homeLowongan} isLoading={isHomeLoading} onSelectJob={(job) => setSelectedJob(job)} onNavigate={navigate} limit={12} showViewAll={true} />
             <PillarContent onNavigate={navigate} />
           </>
         )}
 
         {isSearchPage && (
           <>
-            <SearchBar
-              initialKeywords={queryParams.keywords || ''}
-              initialLocation={queryParams.location || ''}
-              onSearch={handlePerformSearch}
-              isCompact={true}
-            />
-            <JobList
-              lowongan={lowonganResults}
-              isLoading={isSearching}
-              onSelectJob={(job) => setSelectedJob(job)}
-              onNavigate={navigate}
-            />
+            <SearchBar initialKeywords={queryParams.keywords || ''} initialLocation={queryParams.location || ''} onSearch={handlePerformSearch} isCompact={true} />
+            <JobList lowongan={lowonganResults} isLoading={isSearching} onSelectJob={(job) => setSelectedJob(job)} onNavigate={navigate} />
           </>
         )}
 
@@ -185,21 +171,13 @@ export default function App() {
         )}
 
         {isBkkDirectory && (
-          <BkkDirectory
-            onNavigate={navigate}
-            selectedSchoolSlug={bkkSlug}
-            onSearchSchoolJobs={(schoolName, city) => handlePerformSearch(schoolName, city)}
-          />
+          <BkkDirectory onNavigate={navigate} selectedSchoolSlug={bkkSlug} onSearchSchoolJobs={(schoolName, city) => handlePerformSearch(schoolName, city)} />
         )}
 
         {isGuides && <Guides onNavigate={navigate} selectedGuideSlug={guideSlug} />}
 
         {isCategories && (
-          <CategoriesView
-            onNavigate={navigate}
-            selectedCategorySlug={categorySlug}
-            onSearchCategory={(roleName) => handlePerformSearch(roleName, '')}
-          />
+          <CategoriesView onNavigate={navigate} selectedCategorySlug={categorySlug} onSearchCategory={(roleName) => handlePerformSearch(roleName, '')} />
         )}
 
         {isAbout && <AboutView onNavigate={navigate} />}
