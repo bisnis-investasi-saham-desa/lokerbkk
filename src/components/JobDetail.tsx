@@ -47,7 +47,7 @@ export const JobDetail: React.FC<JobDetailProps> = ({
       hiringOrganization: {
         '@type': 'Organization',
         name: job.perusahaan,
-        sameAs: 'https://lokerbkk.com'
+        sameAs: 'https://www.lokerbkk.com'
       },
       jobLocation: {
         '@type': 'Place',
@@ -55,15 +55,6 @@ export const JobDetail: React.FC<JobDetailProps> = ({
           '@type': 'PostalAddress',
           addressLocality: job.kota,
           addressCountry: 'ID'
-        }
-      },
-      baseSalary: {
-        '@type': 'MonetaryAmount',
-        currency: 'IDR',
-        value: {
-          '@type': 'QuantitativeValue',
-          value: 5200000,
-          unitText: 'MONTH'
         }
       }
     };
