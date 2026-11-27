@@ -16,7 +16,8 @@ const PILIHAN_KOTA = [
   'Cikampek',
   'Solo',
   'Tangerang',
-  'Jakarta'
+  'Jakarta',
+  'Dimanapun'
 ];
 
 const PILIHAN_JENIS = [
@@ -24,7 +25,8 @@ const PILIHAN_JENIS = [
   'QC',
   'Staff',
   'Cleaning Service',
-  'Operator Alat'
+  'Operator Alat',
+  'Semua Posisi'
 ];
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -43,11 +45,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleJenisChange = (val: string) => {
     setKeywords(val);
-};
+  };
 
-const handleKotaChange = (val: string) => {
+  const handleKotaChange = (val: string) => {
     setLocation(val);
-};
+  };
 
   return (
     <section
