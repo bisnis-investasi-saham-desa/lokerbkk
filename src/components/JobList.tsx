@@ -35,12 +35,12 @@ export function JobList({ lowongan, isLoading, onSelectJob, onNavigate, limit, s
     <div
       key={job.id}
       onClick={() => handleClick(job)}
-      className="border border-neutral-200 rounded-xl p-4 bg-white hover:shadow-md hover:border-blue-300 transition-all cursor-pointer"
+      className="border border-neutral-200 rounded-xl p-4 bg-white hover:shadow-md hover:border-blue-300 transition-all cursor-pointer overflow-hidden"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-        <div className="flex-1">
-          <h3 className="text-lg font-bold text-neutral-900 mb-1">{job.judul}</h3>
-          <p className="text-neutral-700 text-sm mb-2">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-bold text-neutral-900 mb-1 break-words">{job.judul}</h3>
+          <p className="text-neutral-700 text-sm mb-2 break-words">
             <strong>{job.perusahaan}</strong> — {job.kota.charAt(0).toUpperCase() + job.kota.slice(1)}
           </p>
           <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -51,7 +51,7 @@ export function JobList({ lowongan, isLoading, onSelectJob, onNavigate, limit, s
               <span className="text-neutral-600 text-sm">{job.gaji}</span>
             )}
           </div>
-          <p className="text-neutral-500 text-sm line-clamp-2">{job.deskripsi}</p>
+          <p className="text-neutral-500 text-sm line-clamp-2 break-words">{job.deskripsi}</p>
         </div>
         <a
           href={job.url}
